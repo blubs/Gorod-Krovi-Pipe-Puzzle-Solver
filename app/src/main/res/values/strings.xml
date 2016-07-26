@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">Gorod Krovi Pipe Puzzle Solver</string>
+    <string name="action_settings">Settings</string>
+    <string-array name="pipe_locations">
+        <item>Tank Station</item>
+        <item>Barracks</item>
+        <item>Department Store</item>
+        <item>Dragon Control</item>
+        <item>Armory</item>
+        <item>Supply Depot</item>
+    </string-array>
+</resources>
