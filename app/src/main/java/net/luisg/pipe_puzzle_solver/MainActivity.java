@@ -13,6 +13,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.Spinner;
 import android.widget.TextView;
+import android.widget.Toast;
 
 public class MainActivity extends AppCompatActivity
 {
@@ -30,6 +31,63 @@ public class MainActivity extends AppCompatActivity
 
 	Button calcButton;
 
+	int TANK = 0;
+	int BARRACK = 1;
+	int DEPT = 2;
+	int CONTROL = 3;
+	int ARMORY = 4;
+	int SUPPLY = 5;
+
+	int[] TANK_LINKS = 		{ BARRACK,	SUPPLY,		ARMORY};
+	int[] BARRACK_LINKS =	{ DEPT,		TANK,		CONTROL};
+	int[] DEPT_LINKS = 		{ ARMORY,		BARRACK,		CONTROL};
+	int[] CONTROL_LINKS = 	{ SUPPLY,		DEPT,		BARRACK};
+	int[] ARMORY_LINKS = 	{ SUPPLY,		TANK,		DEPT};
+	int[] SUPPLY_LINKS =	{ CONTROL,	ARMORY,		TANK};
+
+	int[][] links = {TANK_LINKS,BARRACK_LINKS,DEPT_LINKS,CONTROL_LINKS,ARMORY_LINKS,SUPPLY_LINKS};
+
+	int[] solution = {0,0,0,0,0,0};
+
+	int[] resultStrResources = {R.string.str_1,R.string.str_2,R.string.str_3,R.string.str_any};
+
+	public int traverse_pipe(int current,int goal,int[] traversed)
+	{
+		//Check if we have already traversed this pipe
+		if(traversed[current] != 0)
+			return 0;
+		traversed[current] = 1;
+		//If we are at the goal
+		if(current == goal)
+		{
+			//Check if we have traversed all of the pipes
+			if(traversed[0] + traversed[1] + traversed[2] + traversed[3] + traversed[4] + traversed[5] == 6)
+			{
+				//We have found a solution!
+				solution[current] = 3;//3 means any
+				return 1;
+			}
+			else
+			{
+				traversed[current] = 0;
+				return 0;
+			}
+		}
+		//Traverse each of our 3 pipes
+		for(int i = 0; i < 3; i++)
+		{
+			int result = traverse_pipe(links[current][i],goal,traversed);
+			//Check if traversing pipe i yields a solution
+			if(result == 1)
+			{
+				solution[current] = i;
+				return 1;
+			}
+		}
+		traversed[current] = 0;
+		return 0;
+
+	}
 
 	public void calculateSolution()
 	{
@@ -37,11 +95,31 @@ public class MainActivity extends AppCompatActivity
 			return;
 
 		//TODO: solve the path
-
 		int start = greenLightSpinner.getSelectedItemPosition();
 		int goal = purpleCylinderSpinner.getSelectedItemPosition();
 
-		Log.println(Log.INFO,"info","Going from: " + start + " to " + goal + ".");
+		if(start == goal)
+		{
+			Toast.makeText(this, "Error: the start and end locations cannot be the same", Toast.LENGTH_LONG).show();
+			char[] none = {'-','-'};
+			tankView.setText(none,0,2);
+			barracksView.setText(none,0,2);
+			deptView.setText(none,0,2);
+			controlView.setText(none,0,2);
+			armoryView.setText(none,0,2);
+			supplyView.setText(none,0,2);
+			return;
+		}
+
+		int[] traversed = {0,0,0,0,0,0};
+		traverse_pipe(start,goal,traversed);
+
+		tankView.setText(resultStrResources[solution[0]]);
+		barracksView.setText(resultStrResources[solution[1]]);
+		deptView.setText(resultStrResources[solution[2]]);
+		controlView.setText(resultStrResources[solution[3]]);
+		armoryView.setText(resultStrResources[solution[4]]);
+		supplyView.setText(resultStrResources[solution[5]]);
 	}
 
 	@Override
@@ -100,30 +178,5 @@ public class MainActivity extends AppCompatActivity
 		}
 		);
 
-	}
-
-	@Override
-	public boolean onCreateOptionsMenu(Menu menu)
-	{
-		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.menu_main, menu);
-		return true;
-	}
-
-	@Override
-	public boolean onOptionsItemSelected(MenuItem item)
-	{
-		// Handle action bar item clicks here. The action bar will
-		// automatically handle clicks on the Home/Up button, so long
-		// as you specify a parent activity in AndroidManifest.xml.
-		int id = item.getItemId();
-
-		//noinspection SimplifiableIfStatement
-		if(id == R.id.action_settings)
-		{
-			return true;
-		}
-
-		return super.onOptionsItemSelected(item);
 	}
 }

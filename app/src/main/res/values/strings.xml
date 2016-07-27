@@ -2,11 +2,15 @@
     <string name="app_name">Gorod Krovi Pipe Puzzle Solver</string>
     <string name="action_settings">Settings</string>
     <string-array name="pipe_locations">
-        <item>Tank Station</item>
+        <item>Tank Factory</item>
         <item>Barracks</item>
         <item>Department Store</item>
         <item>Dragon Control</item>
         <item>Armory</item>
         <item>Supply Depot</item>
     </string-array>
+    <string name="str_1">1</string>
+    <string name="str_2">2</string>
+    <string name="str_3">3</string>
+    <string name="str_any">any</string>
 </resources>
